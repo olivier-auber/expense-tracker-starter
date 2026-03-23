@@ -14,23 +14,17 @@ npm run preview   # Preview production build
 
 ## Architecture
 
-This is a React + Vite single-page expense tracker app. The entire application lives in a single component: **`src/App.jsx`**.
+This is a React + Vite single-page expense tracker app. No routing, no global state management.
 
-### State & Data Flow
+### Components
 
-All state is managed with `useState` hooks directly in `App.jsx` — no global state, no context, no routing:
-
-- `transactions` — array of transaction objects `{ id, description, amount, type, category, date }`
-- Form state: `description`, `amount`, `type`, `category`
-- Filter state: `filterType`, `filterCategory`
-
-Derived values (`totalIncome`, `totalExpenses`, `balance`, `filteredTransactions`) are computed inline from state on each render.
-
-Transactions are seeded with hardcoded sample data on mount. There is no persistence — state resets on page refresh.
+- **`App`** — holds the `transactions` array in state (seeded with hardcoded data) and passes it down. Handles adding new transactions via `handleAddTransaction`.
+- **`Summary`** — receives `transactions`, computes `totalIncome`, `totalExpenses`, and `balance` internally.
+- **`TransactionForm`** — owns its own form state (`description`, `amount`, `type`, `category`). Calls `onAddTransaction(transaction)` on submit, then resets.
+- **`TransactionList`** — receives `transactions`, owns filter state (`filterType`, `filterCategory`), and renders the filtered table.
 
 ### Key Characteristics
 
-- **Monolithic component**: No component decomposition — the form, summary cards, and transaction table are all rendered from `App.jsx`.
-- **No routing**: Single view only.
-- **Categories**: Hardcoded array (`food`, `housing`, `utilities`, `transport`, `entertainment`, `salary`, `other`).
-- **ESLint config**: Flat config format; allows unused vars starting with uppercase or `_`.
+- **No persistence**: state resets on page refresh.
+- **Categories**: hardcoded array (`food`, `housing`, `utilities`, `transport`, `entertainment`, `salary`, `other`) duplicated in `TransactionForm` and `TransactionList`.
+- **ESLint config**: flat config format; allows unused vars starting with uppercase or `_`.
